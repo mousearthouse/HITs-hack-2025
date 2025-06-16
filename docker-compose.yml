@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    environment:
+      - API_TOKEN=7967605608:AAG8yu92veB-eKFXryZqtJ0ne5EH48aR-ps
+      - BACKEND_URL=http://backend:3000/transcribe
+    volumes:
+      - ./bot/voice_messages:/app/voice_messages
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/voice_messages:/app/voice_messages
+    ports:
+      - "3000:3000"
+    depends_on:
+      - whisper
+
+  whisper:
+    build:
+      context: ./whisper
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5005"
