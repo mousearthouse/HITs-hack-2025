@@ -5,7 +5,7 @@ import os
 import subprocess
 
 app = Flask(__name__)
-model = whisper.load_model("base")
+model = whisper.load_model("small")
 
 def convert_to_wav(input_path):
     output_path = input_path + ".wav"
@@ -28,7 +28,9 @@ def transcribe():
 
     try:
         wav_path = convert_to_wav(ogg_path)
+        print(f"я запустился и я молодец")
         result = model.transcribe(wav_path, language='ru')
+        print(jsonify({"text": result["text"]}))
         return jsonify({"text": result["text"]})
     finally:
         os.remove(ogg_path)

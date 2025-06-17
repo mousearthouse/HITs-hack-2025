@@ -1,3 +1,4 @@
+import json
 import os
 import telebot
 import requests
@@ -40,9 +41,10 @@ def handle_voice(message):
             files = {'audio': (filename, audio_file, 'audio/ogg')}
             try:
                 backend_response = requests.post(BACKEND_URL, files=files)
+                
                 if backend_response.status_code == 200:
-                    result = backend_response.json().get("result", "Не удалось расшифровать сообщение.")
-                    bot.reply_to(message, f"Расшифровка: {result}")
+                    data = backend_response.json()
+                    bot.reply_to(message, f"Ответ от бэка: {json.dumps(data, ensure_ascii=False)}")
                 else:
                     bot.reply_to(message, "Ошибка при расшифровке.")
             except Exception as e:
